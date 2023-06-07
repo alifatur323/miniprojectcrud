@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"crmservice/dto"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"net/http"
 	"time"
 )
 
@@ -22,7 +25,10 @@ func CreateToken(sub uint, name string) string {
 	}
 	return signedToken
 }
-func VerifikasiToken(receivedToken string) string {
+func AuthMiddleware(c *gin.Context) {
+	// Ambil header Authorization
+	receivedToken := c.GetHeader("Authorization")
+
 	token, err := jwt.Parse(receivedToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method")
@@ -30,11 +36,16 @@ func VerifikasiToken(receivedToken string) string {
 		return []byte("Kmzwa8awaa"), nil
 	})
 	if err != nil {
-		return "Failed"
+		c.JSON(http.StatusBadRequest, dto.TokenResponse())
+		c.Abort()
+		return
 	}
 	_, ok := token.Claims.(jwt.MapClaims)
 	if ok {
-		return "Success"
+		c.Next()
+		return
 	}
-	return "Failed"
+	c.JSON(http.StatusBadRequest, dto.TokenResponse())
+	c.Abort()
+	return
 }

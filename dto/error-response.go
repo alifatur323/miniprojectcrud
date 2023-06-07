@@ -48,14 +48,6 @@ func DefaultBadRequestResponse() ErrorResponse {
 	return DefaultErrorResponseWithMessage("Bad request")
 }
 
-func Token(tkn string) ErrorResponse {
-	return ErrorResponse{
-		ResponseMeta: ResponseMeta{
-			Success:      true,
-			MessageTitle: "Token",
-			Message:      "It's your token.",
-			ResponseTime: "",
-		},
-		Data: tkn,
-	}
+func TokenResponse() ErrorResponse {
+	return DefaultErrorResponseWithMessage("You need valid token")
 }

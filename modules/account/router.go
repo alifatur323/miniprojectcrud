@@ -1,6 +1,7 @@
 package account
 
 import (
+	"crmservice/middleware"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -17,8 +18,12 @@ func (r RouterActor) Handle(router *gin.Engine) {
 	basepath := "/account"
 	account := router.Group(basepath)
 	account.POST("/login", r.ActorRequestHandler.LoginActor)
-	account.POST("/", r.ActorRequestHandler.CreateActor)
-	account.GET("/:id", r.ActorRequestHandler.GetActorById)
-	account.PUT("/:id", r.ActorRequestHandler.UpdateActor)
-	account.DELETE("/:id", r.ActorRequestHandler.DeleteActor)
+
+	account.Use(middleware.AuthMiddleware)
+	{
+		account.POST("/", r.ActorRequestHandler.CreateActor)
+		account.GET("/:id", r.ActorRequestHandler.GetActorById)
+		account.PUT("/:id", r.ActorRequestHandler.UpdateActor)
+		account.DELETE("/:id", r.ActorRequestHandler.DeleteActor)
+	}
 }

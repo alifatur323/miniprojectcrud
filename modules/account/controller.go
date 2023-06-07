@@ -2,6 +2,7 @@ package account
 
 import (
 	"crmservice/dto"
+	"crmservice/middleware"
 	"errors"
 )
 
@@ -32,10 +33,11 @@ func (ac ActorStructController) LoginActor(req LoginActorParam) (any, error) {
 	if login.IsActive != "true" {
 		return res, errors.New("Declined")
 	}
+	token := middleware.CreateToken(login.ID, login.Username)
 	res = dto.ResponseMeta{
 		Success:      true,
-		MessageTitle: "Success",
-		Message:      "Selamat login anda berhasil!",
+		MessageTitle: "Token",
+		Message:      token,
 		ResponseTime: "",
 	}
 	return res, nil

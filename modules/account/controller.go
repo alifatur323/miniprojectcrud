@@ -24,7 +24,8 @@ func (ac ActorStructController) LoginActor(req LoginActorParam) (any, error) {
 	if err != nil {
 		return res, errors.New("Declined")
 	}
-	if login.Password != req.Password {
+	cek := middleware.VerifyPassword(req.Password, login.Password)
+	if cek != true {
 		return res, errors.New("Declined")
 	}
 	if login.IsVerified != "true" {

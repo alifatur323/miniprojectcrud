@@ -2,6 +2,7 @@ package account
 
 import (
 	"crmservice/entities"
+	"crmservice/middleware"
 	"crmservice/repositories"
 	"time"
 )
@@ -28,7 +29,7 @@ func (au ActorStructUseCase) CreateActor(actor ActorParam) (entities.Actor, erro
 	var newActor *entities.Actor
 	newActor = &entities.Actor{
 		Username:   actor.Username,
-		Password:   actor.Password,
+		Password:   middleware.CreateHashPassword(actor.Password),
 		RoleId:     2,
 		IsVerified: actor.IsVerified,
 		IsActive:   actor.IsActive,
@@ -53,7 +54,7 @@ func (au ActorStructUseCase) UpdateActor(actor ActorParam, id uint) (any, error)
 	editActor = &entities.Actor{
 		ID:         id,
 		Username:   actor.Username,
-		Password:   actor.Password,
+		Password:   middleware.CreateHashPassword(actor.Password),
 		RoleId:     2,
 		IsVerified: actor.IsVerified,
 		IsActive:   actor.IsActive,
